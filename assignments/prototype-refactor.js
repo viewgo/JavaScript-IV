@@ -116,16 +116,16 @@ const archer = new Humanoid({
     language: "Elvish"
 });
 
-console.log(mage.createdAt); // Today's date
-console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
-console.log(swordsman.healthPoints); // 15
-console.log(mage.name); // Bruce
-console.log(swordsman.team); // The Round Table
-console.log(mage.weapons); // Staff of Shamalama
-console.log(archer.language); // Elvish
-console.log(archer.greet()); // Lilith offers a greeting in Elvish.
-mage.takeDamage(1); // Bruce took damage.
-swordsman.destroy(); // Sir Mustachio was removed from the game.
+// console.log(mage.createdAt); // Today's date
+// console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
+// console.log(swordsman.healthPoints); // 15
+// console.log(mage.name); // Bruce
+// console.log(swordsman.team); // The Round Table
+// console.log(mage.weapons); // Staff of Shamalama
+// console.log(archer.language); // Elvish
+// console.log(archer.greet()); // Lilith offers a greeting in Elvish.
+// mage.takeDamage(1); // Bruce took damage.
+// swordsman.destroy(); // Sir Mustachio was removed from the game.
 
 class Villian extends Humanoid {
     constructor(character) {
@@ -134,10 +134,10 @@ class Villian extends Humanoid {
     }
 
     attack(target) {
+        let attackingWeapon = this.weapons[Math.floor(Math.random() * this.weapons.length)];
+
         console.log(
-            `%c${this.name} is casting a dark spell from ${
-                this.weapons[Math.floor(Math.random() * this.weapons.length)]
-            } at ${target.name}.`,
+            `%c${this.name} is casting a dark spell from ${attackingWeapon[0]} at ${target.name}.`,
             "background: #eeeeee; color: blue"
         );
         sleep(250);
@@ -147,9 +147,9 @@ class Villian extends Humanoid {
 
         if (critChance > 7) {
             //20% CHANCE
-            damage = Math.floor(Math.random() * (20 - 10)) + 10;
+            damage = (Math.floor(Math.random() * (attackingWeapon[2] - attackingWeapon[1])) + attackingWeapon[1]) * 2; //COULD CHANGE TO USE A CRIT RATE FROM CHARACTER OR WEAPON
         } else {
-            damage = Math.floor(Math.random() * (5 - 1)) + 1;
+            damage = Math.floor(Math.random() * (attackingWeapon[2] - attackingWeapon[1])) + attackingWeapon[1];
         }
         target.takeDamage(damage);
 
@@ -165,12 +165,10 @@ class Hero extends Humanoid {
 
     attack(target) {
         if (target.alignment === "Evil") {
+            let attackingWeapon = this.weapons[Math.floor(Math.random() * this.weapons.length)];
+
             console.log(
-                `%c${this.name} is swinging their mighty weapon ${
-                    this.weapons[
-                        Math.floor(Math.random() * this.weapons.length)
-                    ]
-                } at ${target.name}.`,
+                `%c${this.name} is swinging their mighty weapon ${attackingWeapon[0]} at ${target.name}.`,
                 "background: #eeeeee; color: blue"
             );
             sleep(250);
@@ -180,15 +178,14 @@ class Hero extends Humanoid {
 
             if (critChance > 7) {
                 //20% CHANCE
-                damage = Math.floor(Math.random() * (20 - 10)) + 10;
+                damage =
+                    (Math.floor(Math.random() * (attackingWeapon[2] - attackingWeapon[1])) + attackingWeapon[1]) * 2; //COULD CHANGE TO USE A CRIT RATE FROM CHARACTER OR WEAPON
             } else {
-                damage = Math.floor(Math.random() * (5 - 1)) + 1;
+                damage = Math.floor(Math.random() * (attackingWeapon[2] - attackingWeapon[1])) + attackingWeapon[1];
             }
             target.takeDamage(damage);
         } else {
-            console.log(
-                `${this.name} can't attack ${target.name}! They are an ally!`
-            );
+            console.log(`${this.name} can't attack ${target.name}! They are an ally!`);
         }
     }
 }
@@ -203,12 +200,13 @@ const zhor = new Villian({
     healthPoints: 35,
     name: "Zhor",
     team: "Villian's Labor Union",
+    //name, min damage, max damage
     weapons: [
-        "Devine, Cleaver of the Insane",
-        "Thunder-Forged Epitome",
-        "Spectral-Forged Battletome",
-        "Pride's Scroll",
-        "Ash, Urn of Illuminated Dreams"
+        ["Devine, Cleaver of the Insane", 4, 7],
+        ["Thunder-Forged Epitome", 2, 4],
+        ["Spectral-Forged Battletome", 3, 4],
+        ["Pride's Scroll", 1, 6],
+        ["Ash, Urn of Illuminated Dreams", 5, 10]
     ],
     language: "Common Tongue",
     alignment: "Chaotic Evil"
@@ -224,9 +222,9 @@ const loth = new Hero({
     name: "Loth Sacredsnow",
     team: "Alliance of Snowfall",
     weapons: [
-        "Godslayer, Breaker of the Heavens",
-        "Demonic Greathammer",
-        "Howling Obsidian Shortsword"
+        ["Godslayer, Breaker of the Heavens", 4, 12],
+        ["Demonic Greathammer", 2, 7],
+        ["Howling Obsidian Shortsword", 4, 6]
     ],
     language: "Northern",
     alignment: "Neutral Good"
@@ -237,19 +235,13 @@ battleMembers = [loth, zhor];
 let i = 0;
 
 function battle() {
-    if (
-        battleMembers[0].healthPoints > 0 &&
-        battleMembers[1].healthPoints > 0
-    ) {
+    if (battleMembers[0].healthPoints > 0 && battleMembers[1].healthPoints > 0) {
         console.log(`%cTURN ${i + 1}!`, "font-size: 20px; font-weight: 1000;");
         sleep(200);
         battleMembers[0].attack(battleMembers[1]);
         sleep(500);
     }
-    if (
-        battleMembers[0].healthPoints > 0 &&
-        battleMembers[1].healthPoints > 0
-    ) {
+    if (battleMembers[0].healthPoints > 0 && battleMembers[1].healthPoints > 0) {
         battleMembers[1].attack(battleMembers[0]);
         sleep(500);
     }
@@ -262,27 +254,18 @@ function battle() {
 
 function autoBattle() {
     do {
-        if (
-            battleMembers[0].healthPoints > 0 &&
-            battleMembers[1].healthPoints > 0
-        ) {
+        if (battleMembers[0].healthPoints > 0 && battleMembers[1].healthPoints > 0) {
             console.log(`%cTURN ${i + 1}!`, "font-size: 20px");
             battleMembers[0].attack(battleMembers[1]);
             sleep(100);
         }
-        if (
-            battleMembers[0].healthPoints > 0 &&
-            battleMembers[1].healthPoints > 0
-        ) {
+        if (battleMembers[0].healthPoints > 0 && battleMembers[1].healthPoints > 0) {
             battleMembers[1].attack(battleMembers[0]);
             sleep(100);
         }
 
         i++;
-    } while (
-        battleMembers[0].healthPoints > 0 &&
-        battleMembers[1].healthPoints > 0
-    );
+    } while (battleMembers[0].healthPoints > 0 && battleMembers[1].healthPoints > 0);
 }
 
 function sleep(milliseconds) {

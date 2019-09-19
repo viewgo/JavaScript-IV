@@ -7,9 +7,7 @@ class Person {
     }
 
     speak() {
-        console.log(
-            `Hello! My name is ${this.name}, and I'm ${this.age} years old from ${this.location}.`
-        );
+        console.log(`Hello! My name is ${this.name}, and I'm ${this.age} years old from ${this.location}.`);
     }
 }
 
@@ -31,9 +29,7 @@ class Instructor extends Person {
 
     changeGrade(student) {
         student.grade += Math.floor(Math.random() * (10 - -10)) + -10;
-        console.log(
-            `${this.name} graded ${student.name}'s assigments. Their grade is now a ${student.grade}%.`
-        );
+        console.log(`${this.name} graded ${student.name}'s assigments. Their grade is now a ${student.grade}%.`);
         student.graduate();
     }
 }
@@ -64,9 +60,7 @@ class Student extends Person {
 
     graduate() {
         if (this.grade > 70) {
-            console.log(
-                `${this.name} is ready to graduate with a grade of ${this.grade}%!`
-            );
+            console.log(`${this.name} is ready to graduate with a grade of ${this.grade}%!`);
         } else {
             console.log(
                 `${this.name} isn't ready to graduate with a grade of ${this.grade}%. Grading their assignments...`
@@ -84,9 +78,7 @@ class ProjectManager extends Instructor {
     }
 
     standUp(channel) {
-        console.log(
-            `${this.name} announces to ${channel}, @channel standy times!`
-        );
+        console.log(`${this.name} announces to ${channel}, @channel standy times!`);
     }
 
     debugsCode(student, subject) {
