@@ -28,19 +28,35 @@ class CharacterStats extends GameObject {
         this.healthPoints = character.healthPoints;
     }
 
-    takeDamage() {
-        this.healthPoints--;
-        if (this.healthPoints < 1) {
-            console.log(
-                `%c${this.name} took damage. ${this.name} died!`,
-                "background: #eeeeee; color: #990000"
-            );
-            this.destroy();
+    takeDamage(damage) {
+        this.healthPoints -= damage;
+
+        if (damage > 5) {
+            if (this.healthPoints < 1) {
+                console.log(
+                    `%cCRITICAL HIT!!! ${this.name} took ${damage} damage! ${this.name} died!`,
+                    "background: #eeeeee; color: #990000"
+                );
+                this.destroy();
+            } else {
+                console.log(
+                    `%cCRITICAL HIT!!! ${this.name} took ${damage} damage! ${this.name}'s HP is at ${this.healthPoints}!`,
+                    "background: #eeeeee; color: #990000"
+                );
+            }
         } else {
-            console.log(
-                `%c${this.name} took damage. ${this.name}'s HP is at ${this.healthPoints}!`,
-                "background: #eeeeee; color: #990000"
-            );
+            if (this.healthPoints < 1) {
+                console.log(
+                    `%c${this.name} took ${damage} damage. ${this.name} died!`,
+                    "background: #eeeeee; color: #990000"
+                );
+                this.destroy();
+            } else {
+                console.log(
+                    `%c${this.name} took ${damage} damage. ${this.name}'s HP is at ${this.healthPoints}!`,
+                    "background: #eeeeee; color: #990000"
+                );
+            }
         }
     }
 }
@@ -108,7 +124,7 @@ console.log(swordsman.team); // The Round Table
 console.log(mage.weapons); // Staff of Shamalama
 console.log(archer.language); // Elvish
 console.log(archer.greet()); // Lilith offers a greeting in Elvish.
-mage.takeDamage(); // Bruce took damage.
+mage.takeDamage(1); // Bruce took damage.
 swordsman.destroy(); // Sir Mustachio was removed from the game.
 
 class Villian extends Humanoid {
@@ -125,7 +141,18 @@ class Villian extends Humanoid {
             "background: #eeeeee; color: blue"
         );
         sleep(250);
-        target.takeDamage();
+
+        let critChance = Math.floor(Math.random() * (10 - 1)) + 1;
+        let damage = 0;
+
+        if (critChance > 7) {
+            //20% CHANCE
+            damage = Math.floor(Math.random() * (20 - 10)) + 10;
+        } else {
+            damage = Math.floor(Math.random() * (5 - 1)) + 1;
+        }
+        target.takeDamage(damage);
+
         //Can attack anyone, not just heroes because they're bad guys.
     }
 }
@@ -147,7 +174,17 @@ class Hero extends Humanoid {
                 "background: #eeeeee; color: blue"
             );
             sleep(250);
-            target.takeDamage();
+
+            let critChance = Math.floor(Math.random() * (10 - 1)) + 1;
+            let damage = 0;
+
+            if (critChance > 7) {
+                //20% CHANCE
+                damage = Math.floor(Math.random() * (20 - 10)) + 10;
+            } else {
+                damage = Math.floor(Math.random() * (5 - 1)) + 1;
+            }
+            target.takeDamage(damage);
         } else {
             console.log(
                 `${this.name} can't attack ${target.name}! They are an ally!`
@@ -163,7 +200,7 @@ const zhor = new Villian({
         width: 2,
         height: 5
     },
-    healthPoints: 7,
+    healthPoints: 35,
     name: "Zhor",
     team: "Villian's Labor Union",
     weapons: [
@@ -183,7 +220,7 @@ const loth = new Hero({
         width: 2,
         height: 4
     },
-    healthPoints: 9,
+    healthPoints: 45,
     name: "Loth Sacredsnow",
     team: "Alliance of Snowfall",
     weapons: [
@@ -204,7 +241,7 @@ function battle() {
         battleMembers[0].healthPoints > 0 &&
         battleMembers[1].healthPoints > 0
     ) {
-        console.log(`%cTURN ${i + 1}!`, "font-size: 20px");
+        console.log(`%cTURN ${i + 1}!`, "font-size: 20px; font-weight: 1000;");
         sleep(200);
         battleMembers[0].attack(battleMembers[1]);
         sleep(500);
@@ -216,12 +253,15 @@ function battle() {
         battleMembers[1].attack(battleMembers[0]);
         sleep(500);
     }
+    console.log(
+        `%c[${battleMembers[0].name} HP: ${battleMembers[0].healthPoints}] // [${battleMembers[1].name} HP: ${battleMembers[1].healthPoints}]\n`,
+        "font-size: 14px;"
+    );
     i++;
 }
 
 function autoBattle() {
     do {
-        
         if (
             battleMembers[0].healthPoints > 0 &&
             battleMembers[1].healthPoints > 0
