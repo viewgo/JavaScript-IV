@@ -45,7 +45,7 @@ class Student extends Person {
     }
 
     listsSubjects() {
-        this.favSubjects.array.forEach(element => {
+        this.favSubjects.forEach(element => {
             console.log(element);
         });
     }
@@ -106,4 +106,5 @@ const john = new Student({
     teacher: fred
 });
 
+john.listsSubjects();
 john.graduate(); //Should loop until John graduates.
